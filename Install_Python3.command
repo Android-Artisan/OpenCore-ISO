@@ -39,11 +39,16 @@ determine_python_version() {
     local minor=$(echo "$macos_version" | cut -d. -f2)
     
     if [ "$major" -eq 10 ]; then
-        if [ "$minor" -ge 13 ]; then
-            # macOS 10.13 and later
-            PYTHON_VERSION="3.13.7"
-            PYTHON_PKG="python-3.13.7-macos11.pkg"
-            DOWNLOAD_URL="https://www.python.org/ftp/python/3.13.7/python-3.13.7-macos11.pkg"
+        if [ "$minor" -ge 15 ]; then
+            # macOS 10.15
+            PYTHON_VERSION="3.14.0"
+            PYTHON_PKG="python-3.14.0-macos11.pkg"
+            DOWNLOAD_URL="https://www.python.org/ftp/python/3.14.0/python-3.14.0-macos11.pkg"
+        elif [ "$minor" -ge 13 ] && [ "$minor" -le 14 ]; then
+            # macOS 10.13 to 10.14
+            PYTHON_VERSION="3.13.9"
+            PYTHON_PKG="python-3.13.9-macos11.pkg"
+            DOWNLOAD_URL="https://www.python.org/ftp/python/3.13.9/python-3.13.9-macos11.pkg"
         elif [ "$minor" -ge 9 ] && [ "$minor" -le 12 ]; then
             # macOS 10.9 to 10.12
             PYTHON_VERSION="3.9.13"
@@ -60,9 +65,9 @@ determine_python_version() {
         fi
     elif [ "$major" -ge 11 ]; then
         # macOS 11 (Big Sur) and later
-        PYTHON_VERSION="3.13.7"
-        PYTHON_PKG="python-3.13.7-macos11.pkg"
-        DOWNLOAD_URL="https://www.python.org/ftp/python/3.13.7/python-3.13.7-macos11.pkg"
+        PYTHON_VERSION="3.14.0"
+        PYTHON_PKG="python-3.14.0-macos11.pkg"
+        DOWNLOAD_URL="https://www.python.org/ftp/python/3.14.0/python-3.14.0-macos11.pkg"
     else
         print_error "Unsupported macOS version: $macos_version"
         exit 1

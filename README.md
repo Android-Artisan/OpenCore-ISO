@@ -4,7 +4,7 @@ A properly configured OpenCore **DVD/CD-format ISO file** for Proxmox VE to crea
 
 Supports all Intel-based macOS versions — from **Mac OS X 10.4** to **macOS 26**.
 
-Can also be used with **libvirt** or **virt-manager**.
+Can also be used with **libvirt** or **Virt-Manager**.
 
 > [!TIP]
 > **For AMD users:**
@@ -15,7 +15,8 @@ Can also be used with **libvirt** or **virt-manager**.
 
 ## 📦 Download
 
-Get the latest OpenCore ISO and macOS Recovery here: 👉 [Release page](https://github.com/LongQT-sea/OpenCore-ISO/releases)
+* Get the latest OpenCore-ISO: 👉 [Release page](https://github.com/LongQT-sea/OpenCore-ISO/releases)
+* For macOS full installers and recovery ISOs: 👉 [LongQT-sea/macos-iso-builder](https://github.com/LongQT-sea/macos-iso-builder)
 
 ---
 
@@ -104,9 +105,9 @@ The **disk bus type** depends on your needs:
 >
 >   ```
 >   qm set [VMID] --args "-cpu Broadwell-noTSX,vendor=GenuineIntel,model=158"
->   qm set [VMID] --args "-cpu Skylake-Client-v4,vendor=GenuineIntel,model=158"
+>   qm set [VMID] --args "-cpu Haswell-noTSX,vendor=GenuineIntel,model=158"
 >   ```
-> * Avoid using [`host` or `max`](https://browser.geekbench.com/v6/cpu/14313138) CPU types — they can be **~30% slower (single-core)** and **~44% slower (multi-core)** compared to [`recommended`](https://browser.geekbench.com/v6/cpu/14205183) CPU types.
+> * Avoid using [`host` passthrough](https://browser.geekbench.com/v6/cpu/14313138) CPU types — they can be **~30% slower (single-core)** and **~44% slower (multi-core)** compared to [`recommended`](https://browser.geekbench.com/v6/cpu/14205183) CPU types.
 
 ---
 
@@ -146,7 +147,9 @@ Add an **additional CD/DVD drive** for the macOS installer or Recovery ISO, then
 > * Use Create_macOS_ISO.command to download the full macOS installer from Apple and create a true DVD-format macOS installer ISO file.
 
 > [!IMPORTANT]
-> For PCIe/dGPU passthrough on **q35**, you have to disable ACPI-based PCI hotplug (revert to PCIe native hotplug)
+> For PCIe/dGPU passthrough on **q35**:
+> - Disable ReBar in UEFI/BIOS
+> - Disable ACPI-based PCI hotplug (revert to PCIe native hotplug)
 > - Open Proxmox VE Shell and run:
 > ```bash
 > read -p "Enter VMID: " VMID; \
