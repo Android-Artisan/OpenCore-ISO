@@ -16,7 +16,7 @@ Can also be used with **libvirt** or **Virt-Manager**.
 ## 📦 Download
 
 * Get the latest OpenCore-ISO: 👉 [Release page](https://github.com/LongQT-sea/OpenCore-ISO/releases)
-* For macOS full installers and recovery ISOs: 👉 [LongQT-sea/macos-iso-builder](https://github.com/LongQT-sea/macos-iso-builder)
+* For macOS installers and recovery ISOs: 👉 [LongQT-sea/macos-iso-builder](https://github.com/LongQT-sea/macos-iso-builder)
 
 ---
 
@@ -149,8 +149,7 @@ Add an **additional CD/DVD drive** for the macOS installer or Recovery ISO, then
 > [!IMPORTANT]
 > For PCIe/dGPU passthrough on **q35**:
 > - Disable ReBar in UEFI/BIOS
-> - Disable ACPI-based PCI hotplug (revert to PCIe native hotplug)
-> - Open Proxmox VE Shell and run:
+> - Disable ACPI-based PCI hotplug (revert to PCIe native hotplug):
 > ```bash
 > read -p "Enter VMID: " VMID; \
 > ARGS="$(qm config $VMID --current | grep ^args: | cut -d' ' -f2-)"; \
