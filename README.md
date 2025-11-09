@@ -25,7 +25,7 @@ This ISO can also be used with **libvirt** or **Virt-Manager**.
   - [8. Network](#8-network)
   - [9. Finalize](#9-finalize)
 - [Post-Install](#post-install)
-- [macOS Tahoe Cursor Freeze Solution](#macos-tahoe-cursor-freeze-solution)
+- [macOS Tahoe Cursor Freeze Fix](#macos-tahoe-cursor-freeze-fix)
 - [Troubleshooting](#troubleshooting)
 - [Contributing](#contributing)
 - [Credits](#credits)
@@ -127,13 +127,13 @@ The **disk bus type** depends on your needs:
 >   ```
 > ---
 >  **Intel CPUs:**
-> * Intel HEDT / E5-2xxx v3/v4 set the CPU manually via the Proxmox VE Shell, example:
+> * Intel HEDT / E5-2xxx v3/v4 need to override CPUID `model`, example:
 >
 >   ```
 >   qm set [VMID] --args "-cpu Broadwell-noTSX,vendor=GenuineIntel,model=158"
 >   qm set [VMID] --args "-cpu Haswell-noTSX,vendor=GenuineIntel,model=158"
 >   ```
-> * Intel Haswell desktops need to override `stepping` when using `Haswell-noTSX`, set it via the Proxmox VE shell:
+> * Intel Haswell desktops need to override `stepping` when using `Haswell-noTSX`:
 >   ```
 >   qm set [VMID] --args "-cpu Haswell-noTSX,vendor=GenuineIntel,stepping=3"
 >   ```
@@ -168,7 +168,7 @@ Add an **additional CD/DVD drive** for the macOS installer or Recovery ISO, then
 
 ---
 
-### Post-Install
+## Post-Install
 
 1. Install OpenCore onto the macOS startup disk (macOS 10.11 – macOS 26)
    * After macOS installation is complete, open **`LongQT-OpenCore`** on the Desktop and run **`Mount_EFI.command`** to mount the EFI partition on your macOS startup disk.
@@ -178,8 +178,8 @@ Add an **additional CD/DVD drive** for the macOS installer or Recovery ISO, then
    * You can now remove the **LongQT-OpenCore** ISO CD/DVD from the VM **Hardware** tab.
 
 2. To enable iCloud, iMessage, and other iServices:
-   * Follow the [Dortania iServices guide](https://dortania.github.io/OpenCore-Post-Install/universal/iservices.html)
-   * For macOS 15 and macOS 26 install [VMHide.kext](https://github.com/Carnations-Botanica/VMHide)
+   * Follow [Dortania iServices guide](https://dortania.github.io/OpenCore-Post-Install/universal/iservices.html)
+   * For macOS 15 and macOS 26, need to install [VMHide.kext](https://github.com/Carnations-Botanica/VMHide)
 
 3. For smooth GUI performance and 3D acceleration, passthrough a supported Intel iGPU or dGPU.
    * For Intel iGPU passthrough, see [LongQT-sea/intel-igpu-passthru](https://github.com/LongQT-sea/intel-igpu-passthru)
@@ -188,7 +188,7 @@ Add an **additional CD/DVD drive** for the macOS installer or Recovery ISO, then
 > [!IMPORTANT]
 > For PCIe/dGPU passthrough on **q35** machine type:
 > - Disable Resizable BAR in UEFI/BIOS
-> - Disable ACPI-based PCI hotplug (revert to PCIe native hotplug):
+> - Disable QEMU ACPI-based PCI hotplug (revert to PCIe native hotplug), run this in Proxmox shell:
 > ```
 > clear; read -p "Enter your macOS VM ID number: " VMID; \
 > ARGS="$(qm config $VMID --current | grep ^args: | cut -d' ' -f2-)"; \
@@ -196,31 +196,34 @@ Add an **additional CD/DVD drive** for the macOS installer or Recovery ISO, then
 > ```
 
 > [!Tip]
-> For modern macOS versions, if you need a dummy virtual sound device (e.g., for **Parsec**), run the following command in the Proxmox VE shell:
+> For modern macOS versions, if you need a dummy virtual sound device (e.g., for **Parsec, Sunshine/MoonLight**), run this in Proxmox shell:
 > ```
 > clear; read -p "Enter your macOS VM ID number: " VMID; \
 > ARGS="$(qm config $VMID --current | grep ^args: | cut -d' ' -f2-)"; \
 > qm set $VMID -args "$ARGS -device virtio-sound,audiodev=dummy -audiodev none,id=dummy"
 > ```
 
+> [!Tip]
+> To disable SIP, press <kbd>SPACEBAR</kbd> in the OpenCore boot menu and select the "Toggle SIP" option.
+
 ---
 
-### macOS Tahoe Cursor Freeze Solution
+## macOS Tahoe Cursor Freeze Fix
+
+On **macOS 26**, the cursor may randomly freeze. A temporary workaround is to toggle **Use tablet for pointer** in VM’s **Options** tab.
+
+A better fix is to use **`virtio-tablet-pci`**. To do this, disable **Use tablet for pointer** in VM’s **Options** tab, then run this in Proxmox shell:
+   ```
+   clear; read -p "Enter your macOS VM ID number: " VMID; \
+   ARGS="$(qm config $VMID --current | grep ^args: | cut -d' ' -f2-)"; \
+   qm set $VMID -args "$ARGS -device virtio-tablet"
+   ```
 > [!Note]
-> On **macOS 26**, the cursor may randomly freeze. A temporary workaround is to toggle **Use tablet for pointer** in VM’s **Options** tab.
->
-> A better fix is to use **`virtio-tablet-pci`**. To do this, disable **Use tablet for pointer** in VM’s **Options** tab, then run the following command in the Proxmox VE shell:
->
-> ```
-> clear; read -p "Enter your macOS VM ID number: " VMID; \
-> ARGS="$(qm config $VMID --current | grep ^args: | cut -d' ' -f2-)"; \
-> qm set $VMID -args "$ARGS -device virtio-tablet"
-> ```
-> With **`virtio-tablet-pci`**, middle-click on your real mouse acts as a right-click.
->  
-> The most reliable solution is to passthrough a physical mouse and keyboard together with an iGPU or dGPU.
->
-> Alternatively, use a remote desktop solution, e.g. **VNC Screen Sharing** (Settings → General → Sharing) or **Chrome Remote Desktop**.
+> With **`virtio-tablet-pci`**, middle-click on your real mouse acts as a right-click in the VM.
+ 
+The most reliable solution is to passthrough a physical mouse and keyboard together with an iGPU or dGPU.
+
+Alternatively, use a remote desktop solution, e.g. **VNC Screen Sharing** (Settings → General → Sharing) or **Chrome Remote Desktop**.
 
 ---
 

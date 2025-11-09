@@ -27,6 +27,14 @@ print_error() {
     echo -e "${RED}[ERROR]${NC} $1"
 }
 
+# Check if running as root, if not, re-execute with sudo
+if [ "$EUID" -ne 0 ]; then
+    echo ""
+    echo -e "${YELLOW}[INFO]${NC} Administrator privileges required..."
+    exec sudo "$0" "$@"
+    exit
+fi
+
 # Get macOS version
 get_macos_version() {
     sw_vers -productVersion
