@@ -133,6 +133,10 @@ The **disk bus type** depends on your needs:
 >   qm set [VMID] --args "-cpu Broadwell-noTSX,vendor=GenuineIntel,model=158"
 >   qm set [VMID] --args "-cpu Haswell-noTSX,vendor=GenuineIntel,model=158"
 >   ```
+> * Intel Haswell desktops need to override `stepping` when using `Haswell-noTSX`, set it via the Proxmox VE shell:
+>   ```
+>   qm set [VMID] --args "-cpu Haswell-noTSX,vendor=GenuineIntel,stepping=3"
+>   ```
 > * Avoid using [`host`](https://browser.geekbench.com/v6/cpu/14313138) passthrough CPU types — they can be **~30% slower (single-core)** and **~44% slower (multi-core)** compared to [`recommended`](https://browser.geekbench.com/v6/cpu/14205183) CPU types.
 
 For more details, see [QEMU CPU Guide – macOS Guests](https://github.com/LongQT-sea/qemu-cpu-guide?#macos-guests).
