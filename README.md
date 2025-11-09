@@ -9,8 +9,27 @@ This ISO can also be used with **libvirt** or **Virt-Manager**.
 > [!TIP]
 > **For AMD users:**
 > Enjoy a true **vanilla macOS** experience with no kernel patches required for stable operation.
->
 > This is likely the best way to run macOS on AMD hardware while still retaining full hypervisor access to run other VMs.
+
+## Table of Contents
+
+- [Download](#download)
+- [Quick Start Guide](#quick-start-guide)
+  - [1. Create a New VM in the Proxmox VE web interface](#1-create-a-new-vm-in-the-proxmox-ve-web-interface)
+  - [2. General](#2-general)
+  - [3. OS](#3-os)
+  - [4. System](#4-system)
+  - [5. Hard Disk](#5-hard-disk)
+  - [6. CPU](#6-cpu)
+  - [7. Memory](#7-memory)
+  - [8. Network](#8-network)
+  - [9. Finalize](#9-finalize)
+- [Post-Install](#post-install)
+- [macOS Tahoe Cursor Freeze Solution](#macos-tahoe-cursor-freeze-solution)
+- [Troubleshooting](#troubleshooting)
+- [Contributing](#contributing)
+- [Credits](#credits)
+- [Disclaimer](#disclaimer)
 
 ---
 
@@ -21,10 +40,10 @@ This ISO can also be used with **libvirt** or **Virt-Manager**.
 
 > [!CAUTION]
 > These iso are **true CD/DVD ISO image**.
-> Do **NOT** modify the VM config to change ***`media=cdrom`*** to ***`media=disk`***.
+> Do **NOT** modify VM config to change ***`media=cdrom`*** to ***`media=disk`***.
 
 > [!TIP]
-> Run **`Create_macOS_ISO.command`** inside your VM to download the full macOS installer from Apple and generate a proper DVD-format macOS installer ISO.
+> Run [**`Create_macOS_ISO.command`**](/Create_macOS_ISO.command) inside your VM to download the full macOS installer from Apple and generate a proper DVD-format macOS installer ISO.
 
 ---
 
@@ -145,14 +164,14 @@ Add an **additional CD/DVD drive** for the macOS installer or Recovery ISO, then
 
 ---
 
-### 10. Post-Install
+### Post-Install
 
 1. Install OpenCore onto the macOS startup disk (macOS 10.11 – macOS 26)
-   * After macOS installation is complete, open **`LongQT-OpenCore`** on the Desktop and run **`Mount_EFI.command`** to mount the EFI partition of your macOS disk.
-   * Copy the **EFI** folder from **`LongQT-OpenCore/EFI_RELEASE/`** to the mounted EFI partition. This ensures that macOS will boot using the EFI stored on the macOS disk in future startups.
+   * After macOS installation is complete, open **`LongQT-OpenCore`** on the Desktop and run **`Mount_EFI.command`** to mount the EFI partition on your macOS startup disk.
+   * Copy the **EFI** folder from **`LongQT-OpenCore/EFI_RELEASE/`** to the mounted EFI partition. This ensures that macOS will boot using the OpenCore EFI stored on the macOS startup disk in future startups.
    * Run **`Install_Python3.command`** to install Python 3, many apps and scripts need it.
    * Copy **`Mount_EFI.command`**, **`ProperTree`**, and **`GenSMBIOS`** to the Desktop for later use when you need to edit **`config.plist`**.
-   * You can now remove the **LongQT-OpenCore ISO** CD/DVD from the VM **Hardware** tab.
+   * You can now remove the **LongQT-OpenCore** ISO CD/DVD from the VM **Hardware** tab.
 
 2. To enable iCloud, iMessage, and other iServices:
    * Follow the [Dortania iServices guide](https://dortania.github.io/OpenCore-Post-Install/universal/iservices.html)
@@ -164,7 +183,7 @@ Add an **additional CD/DVD drive** for the macOS installer or Recovery ISO, then
 
 > [!IMPORTANT]
 > For PCIe/dGPU passthrough on **q35** machine type:
-> - Disable ReBar in UEFI/BIOS
+> - Disable Resizable BAR in UEFI/BIOS
 > - Disable ACPI-based PCI hotplug (revert to PCIe native hotplug):
 > ```
 > clear; read -p "Enter your macOS VM ID number: " VMID; \
@@ -174,20 +193,22 @@ Add an **additional CD/DVD drive** for the macOS installer or Recovery ISO, then
 
 ---
 
+### macOS Tahoe Cursor Freeze Solution
 > [!Note]
-> On **macOS 26**, the cursor may randomly freeze. A temporary workaround is to disable and then re-enable **Use tablet for pointer** in the VM’s **Options** tab.
+> On **macOS 26**, the cursor may randomly freeze. A temporary workaround is to toggle **Use tablet for pointer** in VM’s **Options** tab.
 >
-> A better (though not perfect) fix is to use **`virtio-tablet-pci`**. To do this, disable **Use tablet for pointer**, then run the following command in the Proxmox VE shell:
+> A better fix is to use **`virtio-tablet-pci`**. To do this, disable **Use tablet for pointer** in VM’s **Options** tab, then run the following command in the Proxmox VE shell:
 >
 > ```
 > clear; read -p "Enter your macOS VM ID number: " VMID; \
 > ARGS="$(qm config $VMID --current | grep ^args: | cut -d' ' -f2-)"; \
 > qm set $VMID -args "$ARGS -device virtio-tablet"
 > ```
->
-> With **`virtio-tablet-pci`**, middle-click on your real mouse is right-click functions.
+> With **`virtio-tablet-pci`**, middle-click on your real mouse acts as a right-click.
 >  
-> The most reliable solution is to passthrough a physical mouse and keyboard together with an iGPU or dGPU, or to use VNC Screen Sharing (Settings → General → Sharing) or Chrome Remote Desktop.
+> The most reliable solution is to passthrough a physical mouse and keyboard together with an iGPU or dGPU.
+>
+> Alternatively, use a remote desktop solution, e.g. **VNC Screen Sharing** (Settings → General → Sharing) or **Chrome Remote Desktop**.
 
 > [!Tip]
 > For modern macOS versions, if you need a dummy virtual sound device (e.g., for **Parsec**), run the following command in the Proxmox VE shell:
@@ -200,8 +221,7 @@ Add an **additional CD/DVD drive** for the macOS installer or Recovery ISO, then
 ---
 
 ## Troubleshooting
-If you encounter issues, check:
-
+If you encounter boot issues, check:
 * Secure Boot is **disabled** (`Pre-Enroll Keys` unticked)
 * The ISO is mounted as a **CD/DVD**, not a disk
 * You’re using a **supported CPU model**
