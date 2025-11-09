@@ -15,7 +15,7 @@ This ISO can also be used with **libvirt** or **Virt-Manager**.
 
 - [Download](#download)
 - [Quick Start Guide](#quick-start-guide)
-  - [1. Create a New VM in the Proxmox VE web interface](#1-create-a-new-vm-in-the-proxmox-ve-web-interface)
+  - [1. Create a New VM](#1-create-a-new-vm-in-the-proxmox-ve-web-interface)
   - [2. General](#2-general)
   - [3. OS](#3-os)
   - [4. System](#4-system)
