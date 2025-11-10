@@ -25,14 +25,14 @@ jobs:
         run: |
           git clone --depth 1 https://github.com/corpnewt/GenSMBIOS
           curl -OL https://github.com/LongQT-sea/OpenCore-ISO/releases/download/v0.2/ProperTree.zip
-          unzip ProperTree.zip && rm ProperTree.zip
+          unzip -qq ProperTree.zip && rm ProperTree.zip && rm -rf GenSMBIOS/.git
 
       - name: Make OpenCore-ISO
         run: |
           echo "Making ISO ..."
           bash Make_ISO.command
 
-      - name: Upload Recovery ISO artifact
+      - name: Upload artifact
         uses: actions/upload-artifact@v5
         with:
           name: OpenCore-ISO
