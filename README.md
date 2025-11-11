@@ -124,8 +124,8 @@ The **disk bus type** depends on your needs:
 
 > [!NOTE]
 > **AMD CPUs:**
-> * For **macOS 10.4 – macOS 12**, tick ✅ **Advanced**, and under **Extra CPU Flags**, turn off `pcid` and `spec-ctrl`. [^amdcpu]
-> * For **macOS 13 – macOS 26**, set the CPU manually via the Proxmox VE Shell, example:
+> * **macOS 10.4 – macOS 12**, tick ✅ **Advanced**, under **Extra CPU Flags**, turn off `pcid` and `spec-ctrl`. [^amdcpu]
+> * **macOS 13 – macOS 26**, set the CPU manually via the Proxmox VE Shell, example:
 >
 >   ```
 >   qm set [VMID] --args "-cpu Skylake-Client-v4,vendor=GenuineIntel"
