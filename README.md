@@ -9,10 +9,10 @@ Supports every Intel-based macOS release, from **Mac OS X 10.4 Tiger** through *
 Also compatible with **libvirt** and **Virt-Manager**.
 
 > [!TIP]
-> Enjoy a true **vanilla macOS** experience with no kernel patches.
+> Enjoy true **vanilla macOS** experience with no kernel patches.
 > This is likely the best way to run macOS on AMD hardware while still retaining full hypervisor access to run other VMs.
->
-> **Found this useful?** Give it a ⭐ star so others can find it too!
+
+**Found this useful?** Give it a ⭐ star so others can find it too!
 
 ## Table of Contents
 
@@ -183,10 +183,12 @@ Add an **additional CD/DVD drive** for the macOS installer or Recovery ISO, then
 ### 10. Troubleshooting
 
 If you encounter boot issues, check:
-* Secure Boot is **disabled** (`Pre-Enroll Keys` unticked)
+
+* Secure Boot is **disabled** (`Pre-Enroll Keys` unchecked)
 * The ISO is mounted as a **CD/DVD**, not a disk
-* Try different **CPU model**
-* macOS 10.4 Tiger need `-device usb-kbd`. Run this in the VM Monitor tab: `device_add usb-kbd`
+* Try a different **CPU model**
+
+macOS 10.4 Tiger no-keyboard issue: either add `-device usb-kbd` to the QEMU args or run `device_add usb-kbd` in the VM Monitor tab.
 
 ---
 
@@ -200,8 +202,8 @@ If you encounter boot issues, check:
    * You can now remove the **LongQT-OpenCore** ISO CD/DVD from the VM **Hardware** tab.
 
 ### 2. To enable iCloud, iMessage, and other iServices:
-   * Follow [Dortania iServices guide](https://dortania.github.io/OpenCore-Post-Install/universal/iservices.html) to generate your own SMBIOS.
-   * For macOS 15 and macOS 26, need to install [VMHide.kext](https://github.com/Carnations-Botanica/VMHide)
+   * Follow [Dortania iServices](https://dortania.github.io/OpenCore-Post-Install/universal/iservices.html) guide to generate your own SMBIOS.
+   * macOS 15 and macOS 26 need to install [VMHide.kext](https://github.com/Carnations-Botanica/VMHide)
 
 ### 3. For smooth GUI performance and 3D acceleration
 
@@ -213,13 +215,20 @@ If you encounter boot issues, check:
 > [!IMPORTANT]
 > PCIe/dGPU passthrough on a **q35** machine requires:
 > * Disable Resizable BAR / Smart Access Memory in UEFI/BIOS.
-> * Disable QEMU’s ACPI-based PCI hotplug (revert to native PCIe hotplug) by running this in the Proxmox shell:
-
+> * Disable QEMU ACPI-based PCI hotplug (revert to native PCIe hotplug). Run this in the Proxmox shell:
 > ```
 > clear; read -p "Enter your macOS VM ID number: " VMID; \
 > ARGS="$(qm config $VMID --current | grep ^args: | cut -d' ' -f2-)"; \
 > qm set $VMID -args "$ARGS -global ICH9-LPC.acpi-pci-hotplug-with-bridge-support=off"
 > ```
+
+> [!Tip]
+> If you need ReBAR enabled for another GPU then you need to set **BAR 0** of the dGPU you want to passthrough to **256MB**, e.g.
+> ```
+> echo 8 > /sys/bus/pci/devices/0000:04:00.0/resource0_resize
+> ```
+> For details on changing BAR size at the OS level, see:
+> https://angrysysadmins.tech/index.php/2023/08/grassyloki/vfio-how-to-enable-resizeable-bar-rebar-in-your-vfio-virtual-machine/
 
 > [!Tip]
 > On modern macOS versions, if you need a dummy virtual sound device (e.g., for **Parsec, Sunshine/MoonLight**), run this in Proxmox shell:
