@@ -1,7 +1,7 @@
-name: Help & Support
+name: Get Help & Support
 description: Get help with OpenCore-ISO setup or configuration
 title: "[HELP] "
-labels: ["question", "help-wanted"]
+labels: ["question", "help wanted"]
 
 body:
 body:
@@ -13,6 +13,7 @@ body:
         - The [README](https://github.com/LongQT-sea/OpenCore-ISO#readme) and its troubleshooting section
         - [Existing issues](https://github.com/LongQT-sea/OpenCore-ISO/issues) for similar problems
         - [Discussions](https://github.com/LongQT-sea/OpenCore-ISO/discussions) for community solutions
+
         **Have you starred this repo yet?** Show your support and help others find this project!
 
   - type: checkboxes
@@ -50,7 +51,7 @@ body:
         Proxmox/Host: 
         CPU: 
         RAM: 
-        VM Config (key settings):
+        VM Config (`qm config VMID`):
       render: shell
     validations:
       required: true

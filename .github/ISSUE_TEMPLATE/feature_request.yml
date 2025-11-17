@@ -9,6 +9,7 @@ body:
       value: |
         ## Thanks for suggesting a feature for OpenCore-ISO!
         Your ideas help make this project better for everyone.
+        
         **Have you starred this repo yet?** Show your support and help others find this project!
 
   - type: checkboxes
