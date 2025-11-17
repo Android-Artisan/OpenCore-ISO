@@ -183,12 +183,12 @@ Add an **additional CD/DVD drive** for the macOS installer or Recovery ISO, then
 ### 10. Troubleshooting
 
 If you encounter boot issues, check:
-
 * Secure Boot is **disabled** (`Pre-Enroll Keys` unchecked)
 * The ISO is mounted as a **CD/DVD**, not a disk
 * Try a different **CPU model**
 
-macOS 10.4 Tiger no-keyboard issue: either add `-device usb-kbd` to the QEMU args or run `device_add usb-kbd` in the VM Monitor tab.
+macOS 10.4 Tiger no-keyboard issue:
+* Either add `-device usb-kbd` to the QEMU args or run `device_add usb-kbd` in the VM Monitor tab.
 
 ---
 
